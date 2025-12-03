@@ -1,0 +1,33 @@
+.header {
+  background-image: url("../../images/backgroundphone.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 576px;
+  display: flex;
+  width: 1440px;
+  flex-direction: column;
+  position: relative;
+  color: white;
+}
+.header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 0;
+}
+
+.header > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media screen and (max-width: 768px) {
+  .header {
+    min-height: 496px;
+  }
+}

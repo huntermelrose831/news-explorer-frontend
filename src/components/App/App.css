@@ -1,0 +1,13 @@
+#root {
+  max-width: 1440px;
+  margin: 0 auto;
+
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
