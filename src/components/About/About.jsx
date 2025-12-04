@@ -4,7 +4,7 @@ function About() {
   return (
     <section className="about">
       <img
-        src="https://via.placeholder.com/464x464"
+        src="https://placehold.co/464x464/9CA3AF/FFFFFF?text=Your+Photo+Here"
         alt="Author"
         className="about__image"
       />
@@ -15,7 +15,7 @@ function About() {
           name, what you do, and which development technologies you know.
         </p>
         <p className="about__text">
-          You can also talk about your experience with Practicum, what you
+          You can also talk about your experience with TripleTen, what you
           learned there, and how you can help potential customers.
         </p>
       </div>
