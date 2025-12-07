@@ -1,10 +1,22 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import LoginModal from "../LoginModal/LoginModal";
+import RegisterModal from "../RegisterModal/RegisterModal";
 import "./Navigation.css";
 function Navigation() {
   const location = useLocation();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+
+  const handleSwitchToRegister = () => {
+    setIsLoginOpen(false);
+    setIsRegisterOpen(true);
+  };
+
+  const handleSwitchToLogin = () => {
+    setIsRegisterOpen(false);
+    setIsLoginOpen(true);
+  };
   return (
     <>
       <nav className="navigation">
@@ -28,7 +40,16 @@ function Navigation() {
           </li>
         </ul>
       </nav>
-      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
+      <LoginModal
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
+        onSwitchToRegister={handleSwitchToRegister}
+      />
+      <RegisterModal
+        isOpen={isRegisterOpen}
+        onClose={() => setIsRegisterOpen(false)}
+        onSwitchToLogin={handleSwitchToLogin}
+      />
     </>
   );
 }

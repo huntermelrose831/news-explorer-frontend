@@ -1,0 +1,7 @@
+/* Import the base modal styles */
+@import "../LoginModal/LoginModal.css";
+
+/* Override only the height for register modal */
+.modal__container_register {
+  height: 458px;
+}
