@@ -71,7 +71,7 @@
   flex-direction: column;
   gap: 9px;
   width: 358px;
-  height: 47px;
+  min-height: 47px;
   text-align: left;
 }
 
@@ -98,6 +98,19 @@
 
 .modal__input::placeholder {
   color: rgba(0, 0, 0, 0.2);
+}
+
+.modal__input_error {
+  border-bottom-color: #ff0000;
+}
+
+.modal__error {
+  font-family: "Roboto", "Inter", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1;
+  color: #ff0000;
+  margin-top: 4px;
 }
 
 .modal__link-text {

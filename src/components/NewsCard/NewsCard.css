@@ -75,6 +75,8 @@
   font-weight: 400;
   line-height: 22px;
   color: #b6bcbf;
+  text-align: left;
+
   margin: 0 0 12px;
 }
 
@@ -83,6 +85,8 @@
   font-size: 26px;
   font-weight: 400;
   line-height: 30px;
+  text-align: left;
+
   color: #1a1b22;
   margin: 0 0 16px;
   display: -webkit-box;
@@ -94,6 +98,7 @@
 .news__card_text {
   font-family: "Roboto", sans-serif;
   font-size: 16px;
+  text-align: left;
   font-weight: 400;
   line-height: 22px;
   color: #1a1b22;
@@ -113,6 +118,7 @@
   margin: 18px 0 0;
   text-transform: uppercase;
   letter-spacing: 0.4px;
+  text-align: left;
 }
 
 @media screen and (max-width: 768px) {
