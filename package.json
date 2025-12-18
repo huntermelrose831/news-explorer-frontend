@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "mcp-server": "node src/mcp-server/index.js"
   },
   "dependencies": {
     "react": "^19.2.0",

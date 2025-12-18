@@ -1,0 +1,138 @@
+// ================== Configuration ==================
+// I prefer having the API configs at the top
+const BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://nomoreparties.co/news/v2"
+    : "https://newsapi.org/v2";
+
+const NEWS_API_KEY = "3f06354d70ee4d4184163bc1cc265b12"; 
+// TODO: Move this to env file later
+
+// ================== Helper Functions ==================
+const checkResponse = (res) => {
+  if (res.ok) {
+    return res.json();
+  }
+  // Maybe add more detailed error handling here someday
+  return Promise.reject(new Error(`Error: ${res.status}`));
+};
+
+// ================== Main News Search ==================
+export const searchNews = async (keyword) => {
+  const today = new Date();
+  const weekAgo = new Date(today);
+  weekAgo.setDate(weekAgo.getDate() - 7); // Going back exactly 7 days
+
+  // Convert dates to the format the API expects
+  const toDate = today.toISOString().split("T")[0];
+  const fromDate = weekAgo.toISOString().split("T")[0];
+
+  // Building the URL manually - could use URLSearchParams
+  const url = `${BASE_URL}/everything?q=${keyword}&from=${fromDate}&to=${toDate}&pageSize=100&apiKey=${NEWS_API_KEY}`;
+
+  try {
+    return fetch(url).then(checkResponse);
+  } catch (error) {
+    throw error; // Re-throwing for now, might want to handle differently
+  }
+};
+
+// ============ MOCK BACKEND FUNCTIONS ============
+// NOTE: These are just temporary until we get the real backend working
+
+export const signUp = (email, password, username) => {
+  // Simulating network delay
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      // Basic validation - should probably add more
+      if (!email || !password || !username) {
+        reject("Missing required fields");
+        return;
+      }
+
+      const userData = { email, username };
+      const fakeToken = "fake-jwt-token-" + Date.now(); // Obviously not secure
+      resolve({ user: userData, token: fakeToken });
+    }, 1000); // 1 second delay to simulate real API
+  });
+};
+
+export const signIn = (email, password) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      // Should validate credentials here but this is just a mock
+      if (!email || !password) {
+        reject("Email and password required");
+        return;
+      }
+
+      const userData = { email, username: "User" }; // Hardcoded username for now
+      const fakeToken = "fake-jwt-token-" + Date.now();
+      resolve({ user: userData, token: fakeToken });
+    }, 1000);
+  });
+};
+
+// ================== Local Storage Article Functions ==================
+export const getSavedArticles = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      let savedArticles;
+      try {
+        savedArticles = JSON.parse(localStorage.getItem("savedArticles")) || [];
+      } catch (error) {
+        // If localStorage is corrupted somehow
+        console.warn("Error reading saved articles:", error);
+        savedArticles = [];
+      }
+      resolve(savedArticles);
+    }, 500); // Shorter delay for reading
+  });
+};
+
+export const saveArticle = (article) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      try {
+        const existingSavedArticles =
+          JSON.parse(localStorage.getItem("savedArticles")) || [];
+
+        // Adding a unique ID - using timestamp for simplicity
+        const articleWithId = {
+          ...article,
+          _id: Date.now().toString(),
+          savedAt: new Date().toISOString(), // Useful to track when saved
+        };
+
+        existingSavedArticles.push(articleWithId);
+        localStorage.setItem("savedArticles", JSON.stringify(existingSavedArticles));
+        resolve(articleWithId);
+      } catch (error) {
+        reject("Failed to save article");
+      }
+    }, 500);
+  });
+};
+
+export const deleteArticle = (articleId) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      try {
+        const currentSavedArticles =
+          JSON.parse(localStorage.getItem("savedArticles")) || [];
+        const filteredArticles = currentSavedArticles.filter(
+          (article) => article._id !== articleId
+        );
+
+        localStorage.setItem("savedArticles", JSON.stringify(filteredArticles));
+        resolve({ message: "Article deleted successfully" });
+      } catch (error) {
+        reject("Failed to delete article");
+      }
+    }, 500);
+  });
+};
+
+// TODO: Add function to check if article is already saved
+// TODO: Add better error handling throughout
+// TODO: Replace localStorage with real database calls when backend is ready

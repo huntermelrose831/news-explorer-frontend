@@ -17,7 +17,7 @@
   border-radius: 16px;
   padding: 34px 36px 0;
   width: 430px;
-  height: 380px;
+  min-height: 380px;
 
   position: relative;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
@@ -100,10 +100,6 @@
   color: rgba(0, 0, 0, 0.2);
 }
 
-.modal__input_error {
-  border-bottom-color: #ff0000;
-}
-
 .modal__error {
   font-family: "Roboto", "Inter", sans-serif;
   font-size: 12px;
@@ -146,7 +142,7 @@
   font-weight: 500;
   line-height: 24px;
   color: white;
-  background: #e8e8e8;
+  background: rgba(47, 113, 229, 1);
   border: none;
   border-radius: 100px;
   padding: 16px 32px;

@@ -83,6 +83,17 @@
 .search-form__button:active {
   background: #2a65cc;
 }
+.search-form__input_error {
+  border-color: #ff0000 !important;
+}
+
+.search-form__error {
+  color: #ff0000;
+  font-family: "Roboto", sans-serif;
+  font-size: 14px;
+  margin-top: 8px;
+  display: block;
+}
 
 @media screen and (max-width: 768px) {
   .search-form {
