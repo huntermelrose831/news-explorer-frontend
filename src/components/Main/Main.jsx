@@ -69,9 +69,26 @@ function Main() {
       {/* Nothing found state */}
       {!isLoading && hasSearched && !error && articles.length === 0 && (
         <div className="main__nothing-found">
-          <svg className="main__nothing-found__icon" viewBox="0 0 64 64" aria-hidden="true">
-            <circle cx="32" cy="32" r="30" fill="none" stroke="#c8cdd0" strokeWidth="2" />
-            <path d="M22 38c2.667-3.333 6.667-5 12-5s9.333 1.667 12 5" stroke="#c8cdd0" strokeWidth="2" fill="none" strokeLinecap="round" />
+          <svg
+            className="main__nothing-found__icon"
+            viewBox="0 0 64 64"
+            aria-hidden="true"
+          >
+            <circle
+              cx="32"
+              cy="32"
+              r="30"
+              fill="none"
+              stroke="#c8cdd0"
+              strokeWidth="2"
+            />
+            <path
+              d="M22 38c2.667-3.333 6.667-5 12-5s9.333 1.667 12 5"
+              stroke="#c8cdd0"
+              strokeWidth="2"
+              fill="none"
+              strokeLinecap="round"
+            />
             <circle cx="24" cy="26" r="2" fill="#c8cdd0" />
             <circle cx="40" cy="26" r="2" fill="#c8cdd0" />
           </svg>
