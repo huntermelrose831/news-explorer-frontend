@@ -1,47 +1,51 @@
-// ================== Configuration ==================
-// I prefer having the API configs at the top
-const BASE_URL =
+// Configuration stuff - keeping the important configs up top for easy access
+const API_BASE_URL =
   import.meta.env.MODE === "production"
     ? "https://nomoreparties.co/news/v2"
     : "https://newsapi.org/v2";
 
 const NEWS_API_KEY = "3f06354d70ee4d4184163bc1cc265b12";
-// TODO: Move this to env file later
+// FIXME: Need to move this to .env file - it's exposed right now
 
-// ================== Helper Functions ==================
-const checkResponse = (res) => {
-  if (res.ok) {
-    return res.json();
+// ================== Utility Functions ==================
+
+// Basic response checker - could probably enhance this later
+const validateApiResponse = (response) => {
+  if (response.ok) {
+    return response.json();
   }
-  // Maybe add more detailed error handling here someday
-  return Promise.reject(new Error(`Error: ${res.status}`));
+  // TODO: Add more sophisticated error handling based on status codes
+  return Promise.reject(new Error(`HTTP Error: ${response.status}`));
 };
 
-// ================== Main News Search ==================
-export const searchNews = async (keyword) => {
-  const today = new Date();
-  const weekAgo = new Date(today);
-  weekAgo.setDate(weekAgo.getDate() - 7); // Going back exactly 7 days
+// ================== News API Functions ==================
 
-  // Convert dates to the format the API expects
-  const toDate = today.toISOString().split("T")[0];
-  const fromDate = weekAgo.toISOString().split("T")[0];
+export const searchNews = async (searchKeyword) => {
+  // Calculate date range - last 7 days from today
+  const currentDate = new Date();
+  const oneWeekAgo = new Date(currentDate);
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-  // Building the URL manually - could use URLSearchParams
-  const url = `${BASE_URL}/everything?q=${keyword}&from=${fromDate}&to=${toDate}&pageSize=100&apiKey=${NEWS_API_KEY}`;
+  // Format dates for API (YYYY-MM-DD format)
+  const endDate = currentDate.toISOString().split("T")[0];
+  const startDate = oneWeekAgo.toISOString().split("T")[0];
 
-  return fetch(url).then(checkResponse);
+  // Construct the query URL - probably should use URLSearchParams but this works
+  const queryUrl = `${API_BASE_URL}/everything?q=${searchKeyword}&from=${startDate}&to=${endDate}&pageSize=100&apiKey=${NEWS_API_KEY}`;
+
+  return fetch(queryUrl).then(validateApiResponse);
 };
 
-// ============ MOCK BACKEND FUNCTIONS ============
-// NOTE: These are just temporary until we get the real backend working
+// ============ TEMPORARY MOCK AUTH FUNCTIONS ============
+// NOTE: These simulate backend calls until we have a real server
 
-export const signUp = (email, password, username) => {
-  // If the email already exists we should reject synchronously so callers
-  // don't get unhandled rejections when advancing timers in tests.
-  const existing = JSON.parse(localStorage.getItem("users")) || [];
-  if (existing.find((u) => u.email === email)) {
-    // Reject asynchronously so tests using fake timers can observe the rejection
+export const signUp = (userEmail, userPassword, displayName) => {
+  // Check for existing users synchronously to avoid test timing issues
+  const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
+  const duplicateUser = existingUsers.find((user) => user.email === userEmail);
+
+  if (duplicateUser) {
+    // Use setTimeout to make rejection async for consistent behavior
     return new Promise((_, reject) =>
       setTimeout(
         () => reject({ message: "User with this email already exists" }),
@@ -50,163 +54,222 @@ export const signUp = (email, password, username) => {
     );
   }
 
+  // Simulate network delay
   return new Promise((resolve) => {
     setTimeout(() => {
-      const users = JSON.parse(localStorage.getItem("users")) || [];
-      const user = { email, username, password }; // NOTE: plain-text for simulation only
-      users.push(user);
-      localStorage.setItem("users", JSON.stringify(users));
-      const token = "fake-jwt-token-" + Date.now();
-      resolve({ user: { email, username }, token });
-    }, 500);
+      const userList = JSON.parse(localStorage.getItem("users")) || [];
+      const newUser = {
+        email: userEmail,
+        username: displayName,
+        password: userPassword, // WARNING: storing plaintext for demo only!
+      };
+      userList.push(newUser);
+      localStorage.setItem("users", JSON.stringify(userList));
+
+      // Generate fake token
+      const mockToken = "demo-jwt-token-" + Date.now();
+      resolve({
+        user: { email: userEmail, username: displayName },
+        token: mockToken,
+      });
+    }, 500); // Simulate 500ms server response time
   });
 };
 
-export const signIn = (email, password) => {
-  // Perform the credential check synchronously to avoid unhandled rejections
-  const users = JSON.parse(localStorage.getItem("users")) || [];
-  const user = users.find((u) => u.email === email && u.password === password);
-  if (!user) {
-    // Reject asynchronously so tests using fake timers can observe the rejection
+export const signIn = (userEmail, userPassword) => {
+  // Validate credentials synchronously first
+  const userDatabase = JSON.parse(localStorage.getItem("users")) || [];
+  const matchedUser = userDatabase.find(
+    (user) => user.email === userEmail && user.password === userPassword
+  );
+
+  if (!matchedUser) {
+    // Async rejection for consistency with real API calls
     return new Promise((_, reject) =>
       setTimeout(() => reject({ message: "Incorrect email or password" }), 0)
     );
   }
 
+  // Simulate successful login with delay
   return new Promise((resolve) => {
     setTimeout(() => {
-      const token = "fake-jwt-token-" + Date.now();
-      resolve({ user: { email: user.email, username: user.username }, token });
+      const sessionToken = "demo-jwt-token-" + Date.now();
+      resolve({
+        user: {
+          email: matchedUser.email,
+          username: matchedUser.username,
+        },
+        token: sessionToken,
+      });
     }, 500);
   });
 };
-// ================== Local Storage Article Functions ==================
+
+// ================== Saved Articles Management ==================
+
+let articleIdCounter = 0; // Simple counter for generating unique IDs
+
 export const getSavedArticles = () => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      let savedArticles;
+      let articlesList;
       try {
-        savedArticles = JSON.parse(localStorage.getItem("savedArticles")) || [];
-      } catch (error) {
-        // If localStorage is corrupted somehow
-        console.warn("Error reading saved articles:", error);
-        savedArticles = [];
+        articlesList = JSON.parse(localStorage.getItem("savedArticles")) || [];
+      } catch (parseError) {
+        // Handle corrupted localStorage data gracefully
+        console.warn(
+          "Could not parse saved articles from storage:",
+          parseError
+        );
+        articlesList = [];
       }
-      resolve(savedArticles);
-    }, 500); // Shorter delay for reading
+      resolve(articlesList);
+    }, 300); // Slightly faster for read operations
   });
 };
 
-export const saveArticle = (article) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      try {
-        const existingSavedArticles =
-          JSON.parse(localStorage.getItem("savedArticles")) || [];
-
-        // Adding a unique ID - use timestamp + randomness so IDs are unique even with fake timers
-        const articleWithId = {
-          ...article,
-          _id: `${Date.now().toString()}-${Math.random()
-            .toString(36)
-            .slice(2, 9)}`,
-          savedAt: new Date().toISOString(), // Useful to track when saved
-          keywords: article.searchKeyword
-            ? [article.searchKeyword]
-            : article.keywords || [],
-        };
-
-        // If this article (by URL) is already saved, merge keywords and return the existing saved entry
-        const existing = existingSavedArticles.find(
-          (a) => a.url === article.url
-        );
-        if (existing) {
-          // Merge keywords if a new searchKeyword is provided
-          const newKeyword = article.searchKeyword || article.keyword;
-          if (newKeyword) {
-            existing.keywords = existing.keywords || [];
-            // add to front (recent first) if not already present
-            if (!existing.keywords.includes(newKeyword)) {
-              existing.keywords.unshift(newKeyword);
-            }
-          }
-
-          // persist updated list
-          localStorage.setItem(
-            "savedArticles",
-            JSON.stringify(existingSavedArticles)
-          );
-
-          // Notify listeners that a save was attempted but the article already exists (and may have been updated)
-          try {
-            window.dispatchEvent(
-              new CustomEvent("savedArticlesChanged", {
-                detail: { type: "save", article: existing },
-              })
-            );
-          } catch {
-            /* In some test environments window may be undefined */
-          }
-
-          resolve(existing);
-          return;
-        }
-
-        existingSavedArticles.push(articleWithId);
-        localStorage.setItem(
-          "savedArticles",
-          JSON.stringify(existingSavedArticles)
-        );
-
-        // Notify any listeners (UI) that saved articles changed
-        try {
-          window.dispatchEvent(
-            new CustomEvent("savedArticlesChanged", {
-              detail: { type: "save", article: articleWithId },
-            })
-          );
-        } catch {
-          /* In some test environments window may be undefined */
-        }
-
-        resolve(articleWithId);
-      } catch (error) {
-        console.error("Failed to save article:", error);
-        reject("Failed to save article");
-      }
-    }, 500);
-  });
-};
-
-export const deleteArticle = (articleId) => {
+export const saveArticle = (articleData) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       try {
         const currentSavedArticles =
           JSON.parse(localStorage.getItem("savedArticles")) || [];
-        const filteredArticles = currentSavedArticles.filter(
-          (article) => article._id !== articleId
+
+        // Create article with unique ID and metadata
+        const articleToSave = {
+          ...articleData,
+          _id: `article-${Date.now()}-${++articleIdCounter}-${Math.random()
+            .toString(36)
+            .substring(2, 10)}`, // More readable ID format
+          savedAt: new Date().toISOString(),
+          keywords: articleData.searchKeyword
+            ? [articleData.searchKeyword]
+            : articleData.keywords || [],
+        };
+
+        // Check for duplicates by URL (if URL exists)
+        const existingArticle = articleData?.url
+          ? currentSavedArticles.find((saved) => saved.url === articleData.url)
+          : undefined;
+
+        if (existingArticle) {
+          // Update existing article with new keyword if provided
+          const newSearchKeyword =
+            articleData.searchKeyword || articleData.keyword;
+          if (newSearchKeyword) {
+            existingArticle.keywords = existingArticle.keywords || [];
+            // Add to beginning of list if not already present
+            if (!existingArticle.keywords.includes(newSearchKeyword)) {
+              existingArticle.keywords.unshift(newSearchKeyword);
+            }
+          }
+
+          // Save updated list
+          localStorage.setItem(
+            "savedArticles",
+            JSON.stringify(currentSavedArticles)
+          );
+
+          // Notify UI components about the update
+          try {
+            window.dispatchEvent(
+              new CustomEvent("savedArticlesChanged", {
+                detail: { type: "update", article: existingArticle },
+              })
+            );
+          } catch {
+            // Fail silently in test environments where window might not exist
+          }
+
+          resolve(existingArticle);
+          return;
+        }
+
+        // Add new article to the list
+        currentSavedArticles.push(articleToSave);
+        localStorage.setItem(
+          "savedArticles",
+          JSON.stringify(currentSavedArticles)
         );
 
-        localStorage.setItem("savedArticles", JSON.stringify(filteredArticles));
+        // Broadcast change event for reactive UI updates
         try {
           window.dispatchEvent(
             new CustomEvent("savedArticlesChanged", {
-              detail: { type: "delete", articleId },
+              detail: { type: "save", article: articleToSave },
             })
           );
         } catch {
-          /* In some test environments window may be undefined */
+          // Silent fail for test environments
         }
-        resolve({ message: "Article deleted successfully" });
-      } catch (error) {
-        console.error("Failed to delete article:", error);
-        reject("Failed to delete article");
+
+        resolve(articleToSave);
+      } catch (storageError) {
+        console.error("Article save operation failed:", storageError);
+        reject("Unable to save article to storage");
       }
-    }, 500);
+    }, 600); // Slightly longer delay to simulate server processing
   });
 };
 
-// TODO: Add function to check if article is already saved
-// TODO: Add better error handling throughout
-// TODO: Replace localStorage with real database calls when backend is ready
+export const deleteArticle = (targetArticleId) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      try {
+        const savedArticlesList =
+          JSON.parse(localStorage.getItem("savedArticles")) || [];
+
+        // Remove the article with matching ID
+        const updatedArticlesList = savedArticlesList.filter(
+          (article) => article._id !== targetArticleId
+        );
+
+        // Check if anything was actually deleted
+        const wasDeleted =
+          updatedArticlesList.length < savedArticlesList.length;
+
+        if (!wasDeleted) {
+          reject("Article not found in saved list");
+          return;
+        }
+
+        localStorage.setItem(
+          "savedArticles",
+          JSON.stringify(updatedArticlesList)
+        );
+
+        // Notify components about the deletion
+        try {
+          window.dispatchEvent(
+            new CustomEvent("savedArticlesChanged", {
+              detail: { type: "delete", articleId: targetArticleId },
+            })
+          );
+        } catch {
+          // Test environment compatibility
+        }
+
+        resolve({ message: "Article removed successfully" });
+      } catch (deleteError) {
+        console.error("Article deletion failed:", deleteError);
+        reject("Failed to remove article from storage");
+      }
+    }, 400); // Medium delay for delete operations
+  });
+};
+
+// Helper function to check if an article is already saved (might need this later)
+export const isArticleSaved = async (articleUrl) => {
+  try {
+    const savedArticles = await getSavedArticles();
+    return savedArticles.some((article) => article.url === articleUrl);
+  } catch (error) {
+    console.warn("Could not check if article is saved:", error);
+    return false;
+  }
+};
+
+// TODO: Implement article search/filtering within saved articles
+// TODO: Add batch operations for multiple articles
+// TODO: Replace all localStorage calls with real API endpoints when backend is ready
+// TODO: Add proper authentication headers to API calls
