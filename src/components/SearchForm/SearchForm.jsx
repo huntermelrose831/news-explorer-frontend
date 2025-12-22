@@ -46,18 +46,18 @@ function SearchForm({ onSearch }) {
   };
 
   return (
-    <form className="search-form" onSubmit={handleSubmit}>
-      <h1 className="search-form__title">What's going on in the world?</h1>
-      <p className="search-form__subtitle">
+    <form className="search__form" onSubmit={handleSubmit}>
+      <h1 className="search__form_title">What's going on in the world?</h1>
+      <p className="search__form_subtitle">
         Find the latest news on any topic and save them in your personal
         account.
       </p>
 
-      <div className="search-form__input-container">
+      <div className="search__form_input-container">
         <input
           type="text"
-          className={`search-form__input ${
-            error ? "search-form__input_error" : ""
+          className={`search__form_input ${
+            error ? "search__form_input_error" : ""
           }`}
           placeholder="Enter topic"
           value={keyword}
@@ -66,14 +66,14 @@ function SearchForm({ onSearch }) {
         />
         <button
           type="submit"
-          className="search-form__button"
+          className="search__form_button"
           disabled={isSearching || !keyword.trim()} // Disable if searching or empty input
         >
           {isSearching ? "Searching..." : "Search"}
         </button>
       </div>
 
-      {error && <span className="search-form__error">{error}</span>}
+      {error && <span className="search__form_error">{error}</span>}
     </form>
   );
 }

@@ -111,13 +111,64 @@ export const saveArticle = (article) => {
             .toString(36)
             .slice(2, 9)}`,
           savedAt: new Date().toISOString(), // Useful to track when saved
+          keywords: article.searchKeyword
+            ? [article.searchKeyword]
+            : article.keywords || [],
         };
+
+        // If this article (by URL) is already saved, merge keywords and return the existing saved entry
+        const existing = existingSavedArticles.find(
+          (a) => a.url === article.url
+        );
+        if (existing) {
+          // Merge keywords if a new searchKeyword is provided
+          const newKeyword = article.searchKeyword || article.keyword;
+          if (newKeyword) {
+            existing.keywords = existing.keywords || [];
+            // add to front (recent first) if not already present
+            if (!existing.keywords.includes(newKeyword)) {
+              existing.keywords.unshift(newKeyword);
+            }
+          }
+
+          // persist updated list
+          localStorage.setItem(
+            "savedArticles",
+            JSON.stringify(existingSavedArticles)
+          );
+
+          // Notify listeners that a save was attempted but the article already exists (and may have been updated)
+          try {
+            window.dispatchEvent(
+              new CustomEvent("savedArticlesChanged", {
+                detail: { type: "save", article: existing },
+              })
+            );
+          } catch (e) {
+            /* In some test environments window may be undefined */
+          }
+
+          resolve(existing);
+          return;
+        }
 
         existingSavedArticles.push(articleWithId);
         localStorage.setItem(
           "savedArticles",
           JSON.stringify(existingSavedArticles)
         );
+
+        // Notify any listeners (UI) that saved articles changed
+        try {
+          window.dispatchEvent(
+            new CustomEvent("savedArticlesChanged", {
+              detail: { type: "save", article: articleWithId },
+            })
+          );
+        } catch (e) {
+          /* In some test environments window may be undefined */
+        }
+
         resolve(articleWithId);
       } catch (error) {
         console.error("Failed to save article:", error);
@@ -138,6 +189,15 @@ export const deleteArticle = (articleId) => {
         );
 
         localStorage.setItem("savedArticles", JSON.stringify(filteredArticles));
+        try {
+          window.dispatchEvent(
+            new CustomEvent("savedArticlesChanged", {
+              detail: { type: "delete", articleId },
+            })
+          );
+        } catch (e) {
+          /* In some test environments window may be undefined */
+        }
         resolve({ message: "Article deleted successfully" });
       } catch (error) {
         console.error("Failed to delete article:", error);

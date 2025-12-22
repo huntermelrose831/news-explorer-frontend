@@ -4,7 +4,7 @@ import "./Footer.css";
 function Footer() {
   return (
     <footer className="footer">
-      <p className="footer__copyright">© 2024 Supersite, Powered by News API</p>
+      <p className="footer__copyright">© 2025 Hunter Melrose, Powered by News API</p>
       <nav className="footer__links">
         <Link to="/" className="footer__link">
           Home

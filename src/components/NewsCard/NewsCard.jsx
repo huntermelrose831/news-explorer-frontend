@@ -1,38 +1,73 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./NewsCard.css";
-import BookMark from "../../assets/bookmark.svg";
+
+import BookMark from "../../assets/bookmark.png";
+import BookMarkBlue from "../../assets/bookmarkblue.png";
+import Trash from "../../assets/trash.png";
+
 import { useAuth } from "../../contexts/AuthContext";
 import { saveArticle, deleteArticle } from "../../utils/api";
 
-function NewsCard({ article, isSaved: initialIsSaved, onSave, onDelete }) {
+function NewsCard({
+  article,
+  isSaved: initialIsSaved,
+  onSave,
+  onDelete,
+  showTrash = false,
+}) {
   const { isLoggedIn } = useAuth();
+
   const [isSaved, setIsSaved] = useState(initialIsSaved || false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [articleId, setArticleId] = useState(article?._id);
 
+  // Keep internal state synced with parent props
+  useEffect(() => {
+    setIsSaved(Boolean(initialIsSaved));
+    setArticleId(article?._id);
+  }, [initialIsSaved, article?._id]);
+
   const { title, description, publishedAt, source, url, urlToImage } =
     article || {};
 
+  // Support both object-style source ({ name }) and string-style source ("Source Name")
+  const sourceName = typeof source === "string" ? source : source?.name;
+
+  // Format date nicely
   const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    return new Date(dateString).toLocaleDateString("en-US", options);
+    if (!dateString) return "Unknown date";
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
   };
 
-  const handleSaveClick = () => {
-    if (!isLoggedIn) {
-      return; // Tooltip will show on hover
-    }
+  // Decide which icon to show
+  const getSaveIcon = () => {
+    if (!isSaved) return BookMark;
+    return showTrash ? Trash : BookMarkBlue;
+  };
 
-    if (isSaved) {
-      // Unsave the article
-      deleteArticle(articleId)
-        .then(() => {
-          setIsSaved(false);
-          if (onDelete) onDelete(articleId);
-        })
-        .catch((err) => console.error("Error deleting article:", err));
-    } else {
-      // Save the article
+  // Decide tooltip text
+  const getTooltipText = () => {
+    if (!isLoggedIn) return "Sign in to save articles";
+    if (!isSaved) return "Save article";
+    return showTrash ? "Remove from saved" : "Saved";
+  };
+
+  // Save or unsave article
+  const handleSaveClick = async () => {
+    if (!isLoggedIn) return;
+
+    try {
+      if (isSaved) {
+        await deleteArticle(articleId);
+        setIsSaved(false);
+        onDelete?.(articleId);
+        return;
+      }
+
       const articleToSave = {
         title,
         description,
@@ -40,25 +75,21 @@ function NewsCard({ article, isSaved: initialIsSaved, onSave, onDelete }) {
         source: source?.name,
         url,
         urlToImage,
+        // Pass the search keyword along so the mock backend stores it
+        searchKeyword: article?.searchKeyword,
       };
 
-      saveArticle(articleToSave)
-        .then((savedArticle) => {
-          setIsSaved(true);
-          setArticleId(savedArticle._id);
-          if (onSave) onSave(savedArticle);
-        })
-        .catch((err) => console.error("Error saving article:", err));
+      const saved = await saveArticle(articleToSave);
+      setIsSaved(true);
+      setArticleId(saved._id);
+      onSave?.(saved);
+    } catch (err) {
+      console.error("Error saving/deleting article:", err);
     }
   };
 
   const openArticle = () => {
-    if (!url) return;
-    window.open(url, "_blank", "noopener");
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") openArticle();
+    if (url) window.open(url, "_blank", "noopener");
   };
 
   return (
@@ -66,7 +97,7 @@ function NewsCard({ article, isSaved: initialIsSaved, onSave, onDelete }) {
       className="news__card"
       onClick={openArticle}
       tabIndex={0}
-      onKeyDown={handleKeyDown}
+      onKeyDown={(e) => e.key === "Enter" && openArticle()}
     >
       <div className="news__card_image-container">
         <img
@@ -74,6 +105,11 @@ function NewsCard({ article, isSaved: initialIsSaved, onSave, onDelete }) {
           alt={title}
           className="news__card_image"
         />
+
+        {/* Keyword badge (only shown on saved articles / saved page via showTrash) */}
+        {showTrash && article?.keywords && article.keywords.length > 0 && (
+          <div className="news__card_keyword">{article.keywords[0]}</div>
+        )}
 
         <div
           className="news__card_save-button-container"
@@ -84,43 +120,32 @@ function NewsCard({ article, isSaved: initialIsSaved, onSave, onDelete }) {
             className={`news__card_save-button ${
               isSaved ? "news__card_save-button_active" : ""
             }`}
-            aria-label={isSaved ? "Remove from saved" : "Save article"}
+            aria-label={getTooltipText()}
             onClick={(e) => {
               e.stopPropagation();
               handleSaveClick();
             }}
           >
             <img
-              src={BookMark}
-              alt={isSaved ? "Saved" : "Save"}
+              src={getSaveIcon()}
+              alt={getTooltipText()}
               className="news__card_save-image"
             />
           </button>
 
           {showTooltip && (
-            <div className="news__card_tooltip">
-              {!isLoggedIn
-                ? "Sign in to save articles"
-                : isSaved
-                ? "Remove from saved"
-                : "Save article"}
-            </div>
+            <div className="news__card_tooltip">{getTooltipText()}</div>
           )}
         </div>
       </div>
 
       <div className="news__card-content">
-        <p className="news__card_date">
-          {publishedAt ? formatDate(publishedAt) : "November 4, 2020"}
-        </p>
-        <h3 className="news__card_title">
-          {title || "Everyone Needs a Special 'Sit Spot' in Nature"}
-        </h3>
+        <p className="news__card_date">{formatDate(publishedAt)}</p>
+        <h3 className="news__card_title">{title || "No title available"}</h3>
         <p className="news__card_text">
-          {description ||
-            "Ever since I read Richard Louv's influential book..."}
+          {description || "No description available"}
         </p>
-        <p className="news__card_source">{source?.name || "Treehugger"}</p>
+        <p className="news__card_source">{sourceName || "Unknown source"}</p>
       </div>
     </article>
   );

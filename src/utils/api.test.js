@@ -97,6 +97,28 @@ describe("mock backend (localStorage) functions", () => {
     expect(after[0]._id).toBe(s2._id);
     vi.useRealTimers();
   });
+
+  it("saveArticle prevents duplicate saves (by url)", async () => {
+    vi.useFakeTimers();
+    const a = { title: "Dup", url: "https://example.com/x" };
+
+    const p1 = saveArticle(a);
+    await vi.runAllTimersAsync();
+    const s1 = await p1;
+
+    const p2 = saveArticle(a);
+    await vi.runAllTimersAsync();
+    const s2 = await p2;
+
+    expect(s1._id).toBe(s2._id);
+
+    const listP = getSavedArticles();
+    await vi.runAllTimersAsync();
+    const list = await listP;
+    expect(list.length).toBe(1);
+
+    vi.useRealTimers();
+  });
 });
 
 describe("searchNews (fetch)", () => {

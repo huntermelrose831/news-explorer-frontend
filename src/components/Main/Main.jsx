@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { searchNews } from "../../utils/api";
+import { useState, useEffect } from "react";
+import { searchNews, getSavedArticles } from "../../utils/api";
 import Header from "../Header/Header";
 import Preloader from "../Preloader/Preloader";
 import NewsCard from "../NewsCard/NewsCard";
@@ -16,33 +16,46 @@ function Main() {
   const [visibleCount, setVisibleCount] = useState(3);
 
   // ================== Handlers ==================
-  const handleSearch = (keyword) => {
+  const handleSearch = async (keyword) => {
     setIsLoading(true);
     setError("");
     setHasSearched(true);
     setVisibleCount(3);
 
-    searchNews(keyword)
-      .then((data) => {
-        if (data.articles && data.articles.length > 0) {
-          setArticles(data.articles);
-          setDisplayedArticles(data.articles.slice(0, 3));
-        } else {
-          setArticles([]);
-          setDisplayedArticles([]);
-        }
-      })
-      .catch((err) => {
-        console.error("Search error:", err);
-        setError(
-          "Sorry, something went wrong during the request. Please try again later."
-        );
+    try {
+      const data = await searchNews(keyword);
+      if (data.articles && data.articles.length > 0) {
+        // Annotate articles with saved info from local storage and include the search keyword
+        const saved = await getSavedArticles();
+        const annotated = data.articles.map((a) => {
+          const match = saved.find((s) => s.url === a.url);
+          // include the keyword used for this search so it can be saved along with the article
+          const base = { ...a, searchKeyword: keyword };
+          return match
+            ? {
+                ...base,
+                _id: match._id,
+                isSaved: true,
+                keywords: match.keywords || [],
+              }
+            : base;
+        });
+        setArticles(annotated);
+        setDisplayedArticles(annotated.slice(0, 3));
+      } else {
         setArticles([]);
         setDisplayedArticles([]);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      }
+    } catch (err) {
+      console.error("Search error:", err);
+      setError(
+        "Sorry, something went wrong during the request. Please try again later."
+      );
+      setArticles([]);
+      setDisplayedArticles([]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleShowMore = () => {
@@ -50,6 +63,32 @@ function Main() {
     setVisibleCount(newCount);
     setDisplayedArticles(articles.slice(0, newCount));
   };
+
+  // listen for savedArticlesChanged events so searches update automatically
+  useEffect(() => {
+    const handler = async () => {
+      const saved = await getSavedArticles();
+      setArticles((prev) =>
+        prev.map((a) => {
+          const match = saved.find((s) => s.url === a.url);
+          return match
+            ? { ...a, _id: match._id, isSaved: true }
+            : { ...a, isSaved: false };
+        })
+      );
+      setDisplayedArticles((prev) =>
+        prev.map((a) => {
+          const match = saved.find((s) => s.url === a.url);
+          return match
+            ? { ...a, _id: match._id, isSaved: true }
+            : { ...a, isSaved: false };
+        })
+      );
+    };
+
+    window.addEventListener("savedArticlesChanged", handler);
+    return () => window.removeEventListener("savedArticlesChanged", handler);
+  }, []);
 
   // ================== Render ==================
   return (
@@ -105,7 +144,45 @@ function Main() {
           <h2 className="news-cards__title">Search results</h2>
           <div className="news-cards__list">
             {displayedArticles.map((article, index) => (
-              <NewsCard key={index} article={article} />
+              <NewsCard
+                key={index}
+                article={article}
+                isSaved={article.isSaved}
+                onSave={(savedArticle) => {
+                  // update articles to mark this article as saved
+                  setArticles((prev) =>
+                    prev.map((p) =>
+                      p.url === savedArticle.url
+                        ? { ...p, _id: savedArticle._id, isSaved: true }
+                        : p
+                    )
+                  );
+                  setDisplayedArticles((prev) =>
+                    prev.map((p) =>
+                      p.url === savedArticle.url
+                        ? { ...p, _id: savedArticle._id, isSaved: true }
+                        : p
+                    )
+                  );
+                }}
+                onDelete={(articleId) => {
+                  // update articles to unmark the saved article
+                  setArticles((prev) =>
+                    prev.map((p) =>
+                      p._id === articleId
+                        ? { ...p, isSaved: false, _id: undefined }
+                        : p
+                    )
+                  );
+                  setDisplayedArticles((prev) =>
+                    prev.map((p) =>
+                      p._id === articleId
+                        ? { ...p, isSaved: false, _id: undefined }
+                        : p
+                    )
+                  );
+                }}
+              />
             ))}
           </div>
           {visibleCount < articles.length && (

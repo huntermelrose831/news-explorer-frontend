@@ -1,4 +1,4 @@
-.search-form {
+.search__form {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -11,7 +11,7 @@
   box-sizing: border-box;
 }
 
-.search-form__title {
+.search__form_title {
   font-family: "Roboto Slab", serif;
   font-size: 60px;
   font-weight: 400;
@@ -23,7 +23,7 @@
   max-width: 608px;
 }
 
-.search-form__subtitle {
+.search__form_subtitle {
   font-family: "Roboto", sans-serif;
   font-size: 18px;
   font-weight: 400;
@@ -34,14 +34,14 @@
   max-width: 608px;
 }
 
-.search-form__input-container {
+.search__form_input-container {
   display: flex;
   width: 100%;
   max-width: 608px;
   position: relative;
 }
 
-.search-form__input {
+.search__form_input {
   flex-grow: 1;
   font-family: "Roboto", sans-serif;
   font-size: 16px;
@@ -55,11 +55,11 @@
   color: #1a1b22;
 }
 
-.search-form__input::placeholder {
+.search__form_input::placeholder {
   color: #b6bcbf;
 }
 
-.search-form__button {
+.search__form_button {
   position: absolute;
   right: 0px;
   font-family: "Roboto", sans-serif;
@@ -76,18 +76,18 @@
   transition: background-color 0.3s;
 }
 
-.search-form__button:hover {
+.search__form_button:hover {
   background: #347eff;
 }
 
-.search-form__button:active {
+.search__form_button:active {
   background: #2a65cc;
 }
-.search-form__input_error {
+.search__form_input_error {
   border-color: #ff0000 !important;
 }
 
-.search-form__error {
+.search__form_error {
   color: #ff0000;
   font-family: "Roboto", sans-serif;
   font-size: 14px;
@@ -96,28 +96,28 @@
 }
 
 @media screen and (max-width: 768px) {
-  .search-form {
+  .search__form {
     padding: 0 16px 32px;
   }
 
-  .search-form__title {
+  .search__form_title {
     font-size: 36px;
     line-height: 40px;
     margin-bottom: 16px;
   }
 
-  .search-form__subtitle {
+  .search__form_subtitle {
     font-size: 16px;
     line-height: 22px;
     margin-bottom: 122px;
   }
 
-  .search-form__input-container {
+  .search__form_input-container {
     flex-direction: column;
     gap: 16px;
   }
 
-  .search-form__button {
+  .search__form_button {
     position: static;
     width: 100%;
   }

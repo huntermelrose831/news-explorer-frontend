@@ -29,41 +29,13 @@
 /* Compact header variant used on pages like Saved News where we don't want the hero background */
 .header.header--compact {
   background-image: none;
-  background-color: #ffffff; /* make nav readable */
+  background-color: transparent; /* make nav readable */
   height: auto;
   padding: 20px 0;
 }
 
 .header.header--compact::before {
   display: none; /* hide the overlay */
-}
-
-/* Darken navigation colors when header is compact so links/buttons are visible on white */
-.header.header--compact .navigation {
-  border-bottom: 1px solid rgba(26, 27, 34, 0.06);
-}
-
-.header.header--compact .navigation__logo {
-  color: #1a1b22;
-}
-
-.header.header--compact .navigation__link {
-  color: #1a1b22;
-}
-
-.header.header--compact .navigation__link:hover,
-.header.header--compact .navigation__link_active {
-  border-bottom-color: #1a1b22;
-}
-
-.header.header--compact .navigation__button {
-  color: #1a1b22;
-  border-color: rgba(26, 27, 34, 0.12);
-}
-
-.header.header--compact .navigation__button:hover {
-  background-color: #1a1b22;
-  color: white;
 }
 
 @media screen and (max-width: 768px) {

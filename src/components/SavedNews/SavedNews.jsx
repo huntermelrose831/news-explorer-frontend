@@ -4,7 +4,7 @@ import NewsCard from "../NewsCard/NewsCard";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import { useAuth } from "../../contexts/AuthContext";
-import { getSavedArticles } from "../../utils/api";
+import { getSavedArticles, deleteArticle } from "../../utils/api";
 
 function SavedNews() {
   const [savedArticles, setSavedArticles] = useState([]);
@@ -30,24 +30,34 @@ function SavedNews() {
     loadSavedArticles();
   }, []);
 
+  // Listen for savedArticlesChanged events so this page updates when saves happen elsewhere
+  useEffect(() => {
+    const handler = async () => {
+      try {
+        const articles = await getSavedArticles();
+        setSavedArticles(articles);
+      } catch (err) {
+        console.error("Failed to refresh saved articles:", err);
+      }
+    };
+    window.addEventListener("savedArticlesChanged", handler);
+    return () => window.removeEventListener("savedArticlesChanged", handler);
+  }, []);
+
   // Handle article deletion
   const handleDeleteArticle = (articleId) => {
-    // Optimistically update UI - remove article immediately
     const updatedArticles = savedArticles.filter(
       (article) => article._id !== articleId
     );
     setSavedArticles(updatedArticles);
 
-    // TODO: Also call deleteArticle API here to remove from backend
+    // Actual deletion is handled by the NewsCard which calls deleteArticle.
+    // We listen for 'savedArticlesChanged' events to keep the UI in sync across views.
   };
 
-  // Extract unique keywords, show first 3 and count how many remain
+  // Extract unique keywords from saved articles (keywords array stored per saved article)
   const allKeywords = Array.from(
-    new Set(
-      savedArticles.map(
-        (article) => article.keyword || article.source || "General"
-      )
-    )
+    new Set(savedArticles.flatMap((article) => article.keywords || []))
   );
 
   const keywords = allKeywords.slice(0, 3);
@@ -60,10 +70,10 @@ function SavedNews() {
   return (
     <>
       <Header showSearch={false} />
-      <main className="saved-news">
-        <section className="saved-news__header">
-          <p className="saved-news__subtitle">Saved articles</p>
-          <h1 className="saved-news__title">
+      <main className="saved__news">
+        <section className="saved__news_header">
+          <p className="saved__news_subtitle">Saved articles</p>
+          <h1 className="saved__news_title">
             {isLoading
               ? "Loading your saved articles..."
               : error
@@ -75,9 +85,9 @@ function SavedNews() {
 
           {/* Show keywords summary if we have saved articles */}
           {!isLoading && !error && keywords.length > 0 && (
-            <p className="saved-news__keywords">
+            <p className="saved__news_keywords">
               By keywords:{" "}
-              <span className="saved-news__keywords-bold">
+              <span className="saved__news_keywords-bold">
                 {keywords.join(", ")}
                 {additionalKeywordsCount > 0 &&
                   `, and ${additionalKeywordsCount} other${
@@ -90,21 +100,22 @@ function SavedNews() {
 
         {/* Show error message if there's an error */}
         {error && (
-          <div className="saved-news__error">
-            <p className="saved-news__error-text">{error}</p>
+          <div className="saved__news_error">
+            <p className="saved__news_error-text">{error}</p>
           </div>
         )}
 
         {/* Display saved articles if we have any */}
         {!isLoading && !error && savedArticles.length > 0 && (
-          <section className="news-cards">
-            <div className="news-cards__list">
+          <section className="saved__news_cards">
+            <div className="saved__news_cards-list">
               {savedArticles.map((article, idx) => (
                 <NewsCard
                   key={article._id || `saved-article-${idx}`} // Fallback key just in case
                   article={article}
                   isSaved={true}
                   onDelete={handleDeleteArticle}
+                  showTrash={true}
                 />
               ))}
             </div>
@@ -113,8 +124,8 @@ function SavedNews() {
 
         {/* Empty state when no articles are saved */}
         {!isLoading && !error && savedArticles.length === 0 && (
-          <div className="saved-news__empty">
-            <p className="saved-news__empty-text">
+          <div className="saved__news_empty">
+            <p className="saved__news_empty-text">
               You haven't saved any articles yet. Start exploring and save
               interesting articles!
             </p>

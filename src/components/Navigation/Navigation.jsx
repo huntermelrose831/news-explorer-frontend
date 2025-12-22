@@ -2,6 +2,8 @@ import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import LoginModal from "../LoginModal/LoginModal";
 import RegisterModal from "../RegisterModal/RegisterModal";
+import logoutwhite from "../../assets/Unionwhite.png";
+import logoutblack from "../../assets/Unionblack.svg";
 import { useAuth } from "../../contexts/AuthContext";
 import "./Navigation.css";
 
@@ -93,7 +95,18 @@ function Navigation() {
                 <span className="navigation__username">
                   {getUserDisplayName()}
                 </span>
-                <div className="navigation__logout-icon"></div>
+                <span className="navigation__logout-icon">
+                  <img
+                    src={logoutwhite}
+                    alt="logout icon"
+                    className="icon-white"
+                  />
+                  <img
+                    src={logoutblack}
+                    alt="logout icon"
+                    className="icon-black"
+                  />
+                </span>
               </button>
             ) : (
               <button
