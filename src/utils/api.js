@@ -144,7 +144,7 @@ export const saveArticle = (article) => {
                 detail: { type: "save", article: existing },
               })
             );
-          } catch (e) {
+          } catch {
             /* In some test environments window may be undefined */
           }
 
@@ -165,7 +165,7 @@ export const saveArticle = (article) => {
               detail: { type: "save", article: articleWithId },
             })
           );
-        } catch (e) {
+        } catch {
           /* In some test environments window may be undefined */
         }
 
@@ -195,7 +195,7 @@ export const deleteArticle = (articleId) => {
               detail: { type: "delete", articleId },
             })
           );
-        } catch (e) {
+        } catch {
           /* In some test environments window may be undefined */
         }
         resolve({ message: "Article deleted successfully" });

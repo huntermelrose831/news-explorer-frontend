@@ -4,7 +4,7 @@ import NewsCard from "../NewsCard/NewsCard";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import { useAuth } from "../../contexts/AuthContext";
-import { getSavedArticles, deleteArticle } from "../../utils/api";
+import { getSavedArticles } from "../../utils/api";
 
 function SavedNews() {
   const [savedArticles, setSavedArticles] = useState([]);

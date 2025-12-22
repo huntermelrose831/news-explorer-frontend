@@ -21,11 +21,16 @@ function NewsCard({
   const [showTooltip, setShowTooltip] = useState(false);
   const [articleId, setArticleId] = useState(article?._id);
 
-  // Keep internal state synced with parent props
+  // Keep internal state synced with parent props (schedule async updates to avoid synchronous setState inside effect)
   useEffect(() => {
-    setIsSaved(Boolean(initialIsSaved));
-    setArticleId(article?._id);
-  }, [initialIsSaved, article?._id]);
+    if (Boolean(initialIsSaved) !== isSaved) {
+      // schedule state change asynchronously to avoid cascading renders during effect
+      Promise.resolve().then(() => setIsSaved(Boolean(initialIsSaved)));
+    }
+    if (article?._id !== articleId) {
+      Promise.resolve().then(() => setArticleId(article?._id));
+    }
+  }, [initialIsSaved, article?._id, isSaved, articleId]);
 
   const { title, description, publishedAt, source, url, urlToImage } =
     article || {};
