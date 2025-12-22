@@ -22,16 +22,17 @@ export const AuthProvider = ({ children }) => {
     if (!saved) return null;
     try {
       return JSON.parse(saved);
-    } catch (err) {
+    } catch {
       // Corrupted data - clear it and return null
       localStorage.removeItem("user");
       return null;
     }
   });
   const [token, setToken] = useState(() => localStorage.getItem("jwt") || null);
-  const [isLoggedIn, setIsLoggedIn] = useState(() => !!(localStorage.getItem("jwt") && localStorage.getItem("user")));
-  const [isLoading, setIsLoading] = useState(false); // Already derived synchronously
-
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    () => !!(localStorage.getItem("jwt") && localStorage.getItem("user"))
+  );
+  const [isLoading] = useState(false);
   // Handle successful login
   const handleLogin = (userData, authToken) => {
     try {

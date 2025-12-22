@@ -77,7 +77,6 @@ describe("mock backend (localStorage) functions", () => {
     const s1 = await p1Await;
     const s2 = await p2Await;
 
-   
     expect(s1._id).not.toBe(s2._id);
 
     const listP = getSavedArticles();
@@ -108,9 +107,10 @@ describe("searchNews (fetch)", () => {
         json: () => Promise.resolve({ articles: [] }),
       })
     );
-    global.fetch = fakeFetch;
+    globalThis.fetch = fakeFetch;
 
-    const res = await searchNews("bitcoin");
+    const response = await searchNews("bitcoin");
+    expect(response.articles).toHaveLength(0);
     expect(fakeFetch).toHaveBeenCalled();
     const calledWith = fakeFetch.mock.calls[0][0];
     expect(calledWith).toContain("q=bitcoin");
