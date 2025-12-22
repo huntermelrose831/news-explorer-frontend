@@ -37,13 +37,22 @@ export const searchNews = async (keyword) => {
 // NOTE: These are just temporary until we get the real backend working
 
 export const signUp = (email, password, username) => {
-  return new Promise((resolve, reject) => {
+  // If the email already exists we should reject synchronously so callers
+  // don't get unhandled rejections when advancing timers in tests.
+  const existing = JSON.parse(localStorage.getItem("users")) || [];
+  if (existing.find((u) => u.email === email)) {
+    // Reject asynchronously so tests using fake timers can observe the rejection
+    return new Promise((_, reject) =>
+      setTimeout(
+        () => reject({ message: "User with this email already exists" }),
+        0
+      )
+    );
+  }
+
+  return new Promise((resolve) => {
     setTimeout(() => {
       const users = JSON.parse(localStorage.getItem("users")) || [];
-      if (users.find((u) => u.email === email)) {
-        reject({ message: "User with this email already exists" });
-        return;
-      }
       const user = { email, username, password }; // NOTE: plain-text for simulation only
       users.push(user);
       localStorage.setItem("users", JSON.stringify(users));
@@ -54,16 +63,18 @@ export const signUp = (email, password, username) => {
 };
 
 export const signIn = (email, password) => {
-  return new Promise((resolve, reject) => {
+  // Perform the credential check synchronously to avoid unhandled rejections
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+  const user = users.find((u) => u.email === email && u.password === password);
+  if (!user) {
+    // Reject asynchronously so tests using fake timers can observe the rejection
+    return new Promise((_, reject) =>
+      setTimeout(() => reject({ message: "Incorrect email or password" }), 0)
+    );
+  }
+
+  return new Promise((resolve) => {
     setTimeout(() => {
-      const users = JSON.parse(localStorage.getItem("users")) || [];
-      const user = users.find(
-        (u) => u.email === email && u.password === password
-      );
-      if (!user) {
-        reject({ message: "Incorrect email or password" });
-        return;
-      }
       const token = "fake-jwt-token-" + Date.now();
       resolve({ user: { email: user.email, username: user.username }, token });
     }, 500);
@@ -93,10 +104,12 @@ export const saveArticle = (article) => {
         const existingSavedArticles =
           JSON.parse(localStorage.getItem("savedArticles")) || [];
 
-        // Adding a unique ID - using timestamp for simplicity
+        // Adding a unique ID - use timestamp + randomness so IDs are unique even with fake timers
         const articleWithId = {
           ...article,
-          _id: Date.now().toString(),
+          _id: `${Date.now().toString()}-${Math.random()
+            .toString(36)
+            .slice(2, 9)}`,
           savedAt: new Date().toISOString(), // Useful to track when saved
         };
 
