@@ -2,11 +2,13 @@ import "./Header.css";
 import Navigation from "../Navigation/Navigation";
 import SearchForm from "../SearchForm/SearchForm";
 
-function Header({ onSearch }) {
+function Header({ onSearch, showSearch = true }) {
+  const headerClass = `header ${showSearch ? "" : "header--compact"}`;
+
   return (
-    <header className="header">
+    <header className={headerClass}>
       <Navigation />
-      <SearchForm onSearch={onSearch} />
+      {showSearch && <SearchForm onSearch={onSearch} />}
     </header>
   );
 }

@@ -1,11 +1,11 @@
 // ================== Configuration ==================
 // I prefer having the API configs at the top
 const BASE_URL =
-  process.env.NODE_ENV === "production"
+  import.meta.env.MODE === "production"
     ? "https://nomoreparties.co/news/v2"
     : "https://newsapi.org/v2";
 
-const NEWS_API_KEY = "3f06354d70ee4d4184163bc1cc265b12"; 
+const NEWS_API_KEY = "3f06354d70ee4d4184163bc1cc265b12";
 // TODO: Move this to env file later
 
 // ================== Helper Functions ==================
@@ -30,49 +30,45 @@ export const searchNews = async (keyword) => {
   // Building the URL manually - could use URLSearchParams
   const url = `${BASE_URL}/everything?q=${keyword}&from=${fromDate}&to=${toDate}&pageSize=100&apiKey=${NEWS_API_KEY}`;
 
-  try {
-    return fetch(url).then(checkResponse);
-  } catch (error) {
-    throw error; // Re-throwing for now, might want to handle differently
-  }
+  return fetch(url).then(checkResponse);
 };
 
 // ============ MOCK BACKEND FUNCTIONS ============
 // NOTE: These are just temporary until we get the real backend working
 
 export const signUp = (email, password, username) => {
-  // Simulating network delay
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      // Basic validation - should probably add more
-      if (!email || !password || !username) {
-        reject("Missing required fields");
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      if (users.find((u) => u.email === email)) {
+        reject({ message: "User with this email already exists" });
         return;
       }
-
-      const userData = { email, username };
-      const fakeToken = "fake-jwt-token-" + Date.now(); // Obviously not secure
-      resolve({ user: userData, token: fakeToken });
-    }, 1000); // 1 second delay to simulate real API
+      const user = { email, username, password }; // NOTE: plain-text for simulation only
+      users.push(user);
+      localStorage.setItem("users", JSON.stringify(users));
+      const token = "fake-jwt-token-" + Date.now();
+      resolve({ user: { email, username }, token });
+    }, 500);
   });
 };
 
 export const signIn = (email, password) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      // Should validate credentials here but this is just a mock
-      if (!email || !password) {
-        reject("Email and password required");
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      const user = users.find(
+        (u) => u.email === email && u.password === password
+      );
+      if (!user) {
+        reject({ message: "Incorrect email or password" });
         return;
       }
-
-      const userData = { email, username: "User" }; // Hardcoded username for now
-      const fakeToken = "fake-jwt-token-" + Date.now();
-      resolve({ user: userData, token: fakeToken });
-    }, 1000);
+      const token = "fake-jwt-token-" + Date.now();
+      resolve({ user: { email: user.email, username: user.username }, token });
+    }, 500);
   });
 };
-
 // ================== Local Storage Article Functions ==================
 export const getSavedArticles = () => {
   return new Promise((resolve) => {
@@ -105,9 +101,13 @@ export const saveArticle = (article) => {
         };
 
         existingSavedArticles.push(articleWithId);
-        localStorage.setItem("savedArticles", JSON.stringify(existingSavedArticles));
+        localStorage.setItem(
+          "savedArticles",
+          JSON.stringify(existingSavedArticles)
+        );
         resolve(articleWithId);
       } catch (error) {
+        console.error("Failed to save article:", error);
         reject("Failed to save article");
       }
     }, 500);
@@ -127,6 +127,7 @@ export const deleteArticle = (articleId) => {
         localStorage.setItem("savedArticles", JSON.stringify(filteredArticles));
         resolve({ message: "Article deleted successfully" });
       } catch (error) {
+        console.error("Failed to delete article:", error);
         reject("Failed to delete article");
       }
     }, 500);

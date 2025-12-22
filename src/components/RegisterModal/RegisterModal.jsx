@@ -2,7 +2,6 @@ import { useState } from "react";
 import ModalWithForm from "../ModalWithForm/ModalWithForm";
 import "./RegisterModal.css";
 import { signUp } from "../../utils/api";
-import { useAuth } from "../../contexts/AuthContext.jsx";
 
 function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
   const [email, setEmail] = useState("");
@@ -42,27 +41,22 @@ function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-
-    // Validate all fields first
     const validationErrors = validateForm();
     setErrors(validationErrors);
-
-    // Don't submit if there are validation errors
-    if (Object.keys(validationErrors).length > 0) {
-      return;
-    }
+    if (Object.keys(validationErrors).length > 0) return;
 
     setIsSubmitting(true);
-
     try {
-      const response = await signUp(email, password, username);
-
-      // If signup successful, show success message (don't auto-login)
+      await signUp(email, password, username);
+      // show success view (or auto-login if you prefer:)
+      // handleLogin(user, token); onClose();
       resetForm();
       setIsSuccess(true);
     } catch (error) {
       console.error("Registration error:", error);
-      setErrors({ submit: "Registration failed. Please try again." });
+      setErrors({
+        submit: error?.message || "Registration failed. Please try again.",
+      });
     } finally {
       setIsSubmitting(false);
     }

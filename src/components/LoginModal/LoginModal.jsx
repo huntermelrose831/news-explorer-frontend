@@ -49,14 +49,13 @@ function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
     signIn(email, password)
       .then(({ user, token }) => {
         handleLogin(user, token);
-
         onClose();
         setEmail("");
         setPassword("");
       })
       .catch((err) => {
-        console.error("Login error:", err);
-        setPasswordError("Login failed. Please try again.");
+        // show specific message when credentials are invalid
+        setPasswordError(err?.message || "Login failed. Please try again.");
       })
       .finally(() => {
         setIsSubmitting(false);

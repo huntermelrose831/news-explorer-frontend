@@ -3,6 +3,7 @@ import "./SavedNews.css";
 import NewsCard from "../NewsCard/NewsCard";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
+import { useAuth } from "../../contexts/AuthContext";
 import { getSavedArticles } from "../../utils/api";
 
 function SavedNews() {
@@ -40,23 +41,25 @@ function SavedNews() {
     // TODO: Also call deleteArticle API here to remove from backend
   };
 
-  // Get unique keywords from saved articles - might be useful for categorization
-  const extractKeywords = () => {
-    if (!savedArticles || savedArticles.length === 0) return [];
+  // Extract unique keywords, show first 3 and count how many remain
+  const allKeywords = Array.from(
+    new Set(
+      savedArticles.map(
+        (article) => article.keyword || article.source || "General"
+      )
+    )
+  );
 
-    const keywordList = savedArticles
-      .map((article) => article.keyword || "General") // Default to "General" if no keyword
-      .filter((keyword, index, array) => array.indexOf(keyword) === index); // Remove duplicates
+  const keywords = allKeywords.slice(0, 3);
+  const additionalKeywordsCount = Math.max(0, allKeywords.length - 3);
 
-    return keywordList.slice(0, 3); // Show only first 3 keywords
-  };
-
-  const keywords = extractKeywords();
-  const additionalKeywordsCount = keywords.length > 3 ? keywords.length - 3 : 0;
+  // Get current user from auth context so we can show their name in the title
+  const { currentUser } = useAuth();
+  const displayName = currentUser?.username || currentUser?.email || null;
 
   return (
     <>
-      <Header />
+      <Header showSearch={false} />
       <main className="saved-news">
         <section className="saved-news__header">
           <p className="saved-news__subtitle">Saved articles</p>
@@ -65,9 +68,9 @@ function SavedNews() {
               ? "Loading your saved articles..."
               : error
               ? "Error loading articles"
-              : `You have ${savedArticles.length} saved article${
-                  savedArticles.length !== 1 ? "s" : ""
-                }`}
+              : `${displayName ? `${displayName}, ` : ""}you have ${
+                  savedArticles.length
+                } saved article${savedArticles.length !== 1 ? "s" : ""}`}
           </h1>
 
           {/* Show keywords summary if we have saved articles */}

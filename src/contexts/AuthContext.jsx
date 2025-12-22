@@ -1,4 +1,5 @@
-import { createContext, useState, useContext, useEffect } from "react";
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useState, useContext } from "react";
 
 // ================== Auth Context ==================
 // This will hold all our authentication state
@@ -15,32 +16,21 @@ export const useAuth = () => {
 
 // ================== Auth Provider ==================
 export const AuthProvider = ({ children }) => {
-  // State for user data and authentication status
-  const [currentUser, setCurrentUser] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [token, setToken] = useState(null);
-  const [isLoading, setIsLoading] = useState(true); // Added loading state for better UX
-
-  // Check for existing auth data when component mounts
-  useEffect(() => {
-    const savedToken = localStorage.getItem("jwt");
-    const savedUser = localStorage.getItem("user");
-
-    if (savedToken && savedUser) {
-      try {
-        const userData = JSON.parse(savedUser);
-        setToken(savedToken);
-        setCurrentUser(userData);
-        setIsLoggedIn(true);
-      } catch (error) {
-        // If there's an issue parsing saved user data, clear everything
-        console.warn("Error parsing saved user data:", error);
-        localStorage.removeItem("jwt");
-        localStorage.removeItem("user");
-      }
+  // State for user data and authentication status; derive initial state from localStorage synchronously
+  const [currentUser, setCurrentUser] = useState(() => {
+    const saved = localStorage.getItem("user");
+    if (!saved) return null;
+    try {
+      return JSON.parse(saved);
+    } catch (err) {
+      // Corrupted data - clear it and return null
+      localStorage.removeItem("user");
+      return null;
     }
-    setIsLoading(false); // Done checking localStorage
-  }, []);
+  });
+  const [token, setToken] = useState(() => localStorage.getItem("jwt") || null);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => !!(localStorage.getItem("jwt") && localStorage.getItem("user")));
+  const [isLoading, setIsLoading] = useState(false); // Already derived synchronously
 
   // Handle successful login
   const handleLogin = (userData, authToken) => {

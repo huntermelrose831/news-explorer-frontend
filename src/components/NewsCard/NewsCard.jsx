@@ -77,14 +77,14 @@ function NewsCard({ article, isSaved: initialIsSaved, onSave, onDelete }) {
 
         <div
           className="news__card_save-button-container"
-          onMouseEnter={() => !isLoggedIn && setShowTooltip(true)}
+          onMouseEnter={() => setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}
         >
           <button
             className={`news__card_save-button ${
               isSaved ? "news__card_save-button_active" : ""
             }`}
-            aria-label="Save article"
+            aria-label={isSaved ? "Remove from saved" : "Save article"}
             onClick={(e) => {
               e.stopPropagation();
               handleSaveClick();
@@ -92,13 +92,19 @@ function NewsCard({ article, isSaved: initialIsSaved, onSave, onDelete }) {
           >
             <img
               src={BookMark}
-              alt="save card button"
+              alt={isSaved ? "Saved" : "Save"}
               className="news__card_save-image"
             />
           </button>
 
           {showTooltip && (
-            <div className="news__card_tooltip">Sign in to save articles</div>
+            <div className="news__card_tooltip">
+              {!isLoggedIn
+                ? "Sign in to save articles"
+                : isSaved
+                ? "Remove from saved"
+                : "Save article"}
+            </div>
           )}
         </div>
       </div>
