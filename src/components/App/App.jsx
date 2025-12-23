@@ -1,20 +1,22 @@
-import React from "react";
-import { BrowserRouter } from "react-router-dom";
-import Main from "./components/Main";
-import Header from "./components/Header";
-/* other imports */
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import "./App.css";
+import Main from "../Main/Main";
+import SavedNews from "../SavedNews/SavedNews";
+import { AuthProvider } from "../../contexts/AuthContext";
 
 function App() {
-  // Vite exposes the build-time base at import.meta.env.BASE_URL.
-  // In dev this is '/', in the gh-pages build it will be '/news-explorer-frontend/'.
   const basename = import.meta.env.BASE_URL || "/";
-
   return (
-    <BrowserRouter basename={basename}>
-      <Header />
-      <Main />
-      {/* rest of your routes/components */}
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter basename={basename}>
+        <div className="page">
+          <Routes>
+            <Route path="/" element={<Main />} />
+            <Route path="/saved-news" element={<SavedNews />} />
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
