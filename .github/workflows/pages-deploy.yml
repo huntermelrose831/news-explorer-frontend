@@ -46,7 +46,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deploy
         uses: actions/deploy-pages@v1
-
-      - name: Post-deploy status
-        run: |
-          echo "Pages deployment finished: ${{ steps.deploy.outcome }}"
