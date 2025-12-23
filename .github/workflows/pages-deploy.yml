@@ -4,7 +4,6 @@ name: Pages Deploy
 on:
   push:
     branches: [stage-1-frontend-and-api]
-  # Optional manual dispatch — it will still only deploy when the workflow ref is the stage branch
   workflow_dispatch:
 
 concurrency:
@@ -42,17 +41,18 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Upload artifact for GitHub Pages
-        # Make sure your production build outputs to `./dist`. Change `path:` if different.
-        uses: actions/upload-pages-artifact@v1
+      - name: Upload Pages artifact
+        # USE v3 to avoid the deprecated actions/upload-artifact v3 error
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    # Enforce deploy only when the workflow run is for the stage branch
+    environment: github-pages
+    # Only deploy when this run is for the stage branch
     if: github.ref == 'refs/heads/stage-1-frontend-and-api'
     steps:
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4
