@@ -1,182 +1,171 @@
-News Explorer Frontend
-A modern news aggregation web application built with React and Vite. This project allows users to search for news articles, save their favorites, and manage their reading preferences through a clean, responsive interface.
+# News Explorer Frontend
 
- Features
-News Search: Search for articles using keywords with real-time API integration
-Article Management: Save and organize favorite articles for later reading
-User Authentication: Secure login and registration system
-Responsive Design: Optimized for desktop, tablet, and mobile devices
-Modern UI: Clean, intuitive interface following contemporary design principles
- Technologies Used
-Core Technologies
-React 18 - Modern functional components with hooks
-Vite - Fast build tool and development server
-React Router - Client-side routing and navigation
-JavaScript/TypeScript - Modern ES6+ features
-Development Tools
-ESLint - Code linting and quality enforcement
-React DevTools - Component debugging and optimization
-CSS3 - Modern styling with Flexbox and Grid
-API Integration
-News API - Real-time news data fetching
-Custom Backend API - User authentication and saved articles management
- Installation
-Prerequisites
-Node.js (version 16 or higher)
-npm, yarn, or pnpm package manager
-Setup Instructions
-Clone the repository
+A React + Vite application for searching news, saving articles, and managing saved items.
 
-bash
+## Live demo
+
+https://huntermelrose831.github.io/news-explorer-frontend/
+
+---
+
+## Table of contents
+
+- [Overview](#overview)
+- [Getting started](#getting-started)
+- [Available scripts](#available-scripts)
+- [Project structure](#project-structure)
+- [Deployment](#deployment)
+- [Configuration](#configuration)
+- [Development workflow](#development-workflow)
+- [Troubleshooting](#troubleshooting)
+- [Stage 1 checklist](#stage-1-checklist)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Overview
+
+News Explorer is a simple news aggregation front-end built with React and Vite. Users can search the News API for articles, save favorites, and view saved articles on a dedicated page.
+
+Key features:
+
+- Search news by keyword (News API)
+- Save and remove articles (mock backend via localStorage)
+- Authentication flows (signup / sign-in mocks)
+- Responsive design for desktop, tablet, and mobile
+
+---
+
+## Getting started
+
+### Prerequisites
+
+- Node.js (v16+ recommended)
+- npm (or yarn / pnpm)
+
+### Install
+
+Clone the repository and install dependencies:
+
+```bash
 git clone <repository-url>
 cd news-explorer-frontend
+npm ci --legacy-peer-deps
+```
 
-Install dependencies
+Create an environment file and add any required API keys:
 
-bash
-
-# Using npm
-
-npm install
-
-# Using yarn
-
-yarn install
-
-# Using pnpm
-
-pnpm install
-
-Environment Configuration
-
-bash
-
-# Create environment file
-
+```bash
 cp .env.example .env
+# Edit .env: VITE_NEWS_API_KEY, VITE_BACKEND_URL
+```
 
-# Add your API credentials
+### Run (development)
 
-VITE_NEWS_API_KEY=your_news_api_key_here
-VITE_BACKEND_URL=your_backend_url_here
-
-Start the development server
-
-bash
+```bash
 npm run dev
+# Open http://localhost:5173
+```
 
-Open your browser
-Navigate to http://localhost:5173 to view the application
+### Build / Preview (production)
 
- Project Structure
-angelscript
-src/
-├── components/ # Reusable UI components
-│ ├── App/ # Root application component
-│ ├── Header/ # Site header and navigation
-│ ├── Navigation/ # Navigation menu
-│ ├── SearchForm/ # News search functionality
-│ ├── NewsCard/ # Individual news article display
-│ ├── Preloader/ # Loading spinner component
-│ ├── ModalWithForm/ # Reusable modal component
-│ ├── LoginModal/ # User login interface
-│ ├── RegisterModal/ # User registration interface
-│ ├── About/ # About section component
-│ └── Footer/ # Site footer
-├── pages/ # Page-level components
-│ ├── MainPage/ # Home page with news search
-│ └── SavedNewsPage/ # User's saved articles
-├── utils/ # Utility functions and API calls
-│ ├── api.js # API service functions
-│ └── helpers.js # Helper utilities
-├── assets/ # Static assets
-│ ├── images/ # Image files
-│ └── fonts/ # Custom fonts
-└── vendor/ # Third-party CSS (normalize, etc.)
-
- Design Resources
-This project follows the design specifications from:
-
-Figma Design for News Explorer
-Typography Guidelines
- Responsive Design
-The application is fully responsive and tested on:
-
-Desktop: 1280px and above
-Tablet: 768px - 1279px
-Mobile: 320px - 767px
- Routing
-/ - Main page with news search and results
-/saved-news - User's saved articles (authentication required)
- Available Scripts
-bash
-
-# Development server
-
-npm run dev
-
-# Production build
-
+```bash
 npm run build
-
-# Preview production build
-
 npm run preview
+# Preview server runs locally to validate production output
+```
 
-# Run linting
+---
 
-npm run lint
+## Available scripts
 
-# Fix linting issues
+- `npm run dev` — start the dev server
+- `npm run build` — create production build in `dist/`
+- `npm run preview` — preview production build locally
+- `npm run lint` — run ESLint
+- `npm run test` — run unit tests (Vitest)
+- `npm run test:ci` — run tests once (CI)
 
-npm run lint:fix
+---
 
- Deployment
-Build for Production
-bash
-npm run build
+## Project structure
 
-The build artifacts will be stored in the dist/ directory and can be deployed to any static hosting service.
+```
+src/
+├── components/      # React components (App, Header, Navigation, NewsCard, etc.)
+├── contexts/        # React context providers (Auth)
+├── utils/           # API and helper functions
+├── assets/          # Images and fonts
+└── main.jsx         # App entry (Router setup)
+```
 
-Deployment Options
-Netlify: Drag and drop the dist folder
-Vercel: Connect your Git repository
-GitHub Pages: Use the built-in Actions workflow
- Configuration
-Vite Configuration
-The project uses a custom Vite configuration for:
+---
 
-React plugin setup
-Path aliases for cleaner imports
-Development server settings
-Build optimization
-ESLint Rules
-React Hooks rules for proper hook usage
-Modern JavaScript best practices
-Code formatting standards
- Development Workflow
-Branch Strategy: Use feature branches for new development
-Code Style: Follow the established ESLint configuration
-Component Structure: Use functional components with hooks
-CSS Organization: Component-scoped styles with BEM methodology
-Testing: Manual testing across different device sizes
-Known Issues
-Modal animations may need refinement in older browsers
-Search results pagination to be implemented in future versions
-Offline functionality planned for upcoming releases
-Contributing
-Fork the repository
-Create a feature branch (git checkout -b feature/amazing-feature)
-Commit your changes (git commit -m 'Add some amazing feature')
-Push to the branch (git push origin feature/amazing-feature)
-Open a Pull Request
- License
-This project is part of a web development bootcamp curriculum. All rights reserved.
+## Deployment
 
- Support
-For questions or issues:
+This project uses GitHub Actions to build and deploy to GitHub Pages. The site is published at:
 
-Check the project documentation
-Open an issue in this repository
-Contact the development team
-Built with  using React and Vite
+https://huntermelrose831.github.io/news-explorer-frontend/
+
+Workflow files:
+
+- `.github/workflows/ci.yml` — lint & tests for pushes/PRs
+- `.github/workflows/pages-deploy.yml` — builds and deploys to `gh-pages`
+
+To force a rebuild and deploy, push changes to the `main` branch or run the `Pages Deploy` workflow manually from the Actions tab.
+
+---
+
+## Configuration
+
+- Vite picks up env vars from `.env*` files (prefix with `VITE_` to expose to the client)
+- Base path for production may be set via `vite.config.js` when hosting under a subpath
+
+---
+
+## Development workflow
+
+- Use feature branches and open PRs against `main`
+- Run lint and tests before creating a PR
+- Follow BEM-like CSS conventions and keep components small and focused
+
+---
+
+## Troubleshooting
+
+- If the live site shows 404s for assets (e.g., `src/main.jsx`), verify that GitHub Pages is serving the `gh-pages` branch (not the repo root) and that the deploy workflow completed successfully.
+- If Node or Vite warns about Node versions, upgrade local Node or pin a compatible version in CI.
+
+---
+
+## Stage 1 checklist
+
+Ensure all items below are addressed before submission:
+
+- [ ] A PR link is included when requesting review
+- [ ] The project builds and runs without errors
+- [ ] News API search integration works
+- [ ] `/saved-news` route exists and is accessible
+- [ ] Frontend is deployed to a remote host (GitHub Pages is acceptable for Stage 1)
+
+Acceptance criteria highlights:
+
+- Responsive layout matches design on target resolutions (desktop / tablet / mobile)
+- Semantic HTML and accessible markup are used
+- Components are reusable and follow best practices
+- No blocking ESLint warnings or failing tests
+
+---
+
+## Contributing
+
+1. Fork the repo
+2. Create a feature branch `git checkout -b feature/your-feature`
+3. Commit changes and open a PR against `main`
+
+---
+
+## License
+
+This project is part of a training curriculum. All rights reserved.
