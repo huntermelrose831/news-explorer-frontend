@@ -3,7 +3,7 @@ name: Pages Deploy
 # Deploy site to GitHub Pages via GitHub Actions
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 concurrency:
@@ -48,4 +48,5 @@ jobs:
         uses: actions/deploy-pages@v1
 
       - name: Post-deploy status
-        run: echo "Pages deployment finished: ${{ steps.deploy.outcome }}"
+        run: |
+          echo "Pages deployment finished: ${{ steps.deploy.outcome }}"
