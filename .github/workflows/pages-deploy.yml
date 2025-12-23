@@ -39,7 +39,7 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build
+        run: npm run build:ghpages
 
       - name: Upload Pages artifact
         # USE v3 to avoid the deprecated actions/upload-artifact v3 error

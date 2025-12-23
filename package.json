@@ -6,12 +6,14 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:ghpages": "vite build --base /news-explorer-frontend/",
     "lint": "eslint .",
     "test": "vitest",
     "test:ci": "vitest --run --reporter dot",
     "test:coverage": "vitest run --coverage",
     "preview": "vite preview",
-    "mcp-server": "node src/mcp-server/index.js"
+    "mcp-server": "node src/mcp-server/index.js",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "react": "^19.2.0",
