@@ -3,7 +3,9 @@ name: Pages Deploy
 # Deploy site to GitHub Pages via GitHub Actions
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, stage-1-frontend-and-api]
+  pull_request:
+    branches: [main, master, stage-1-frontend-and-api]
   workflow_dispatch:
 
 concurrency:
@@ -45,10 +47,12 @@ jobs:
         uses: actions/configure-pages@v3
 
       - name: Upload artifact
+        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
         uses: actions/upload-pages-artifact@v1
         with:
           path: ./dist
 
       - name: Deploy to GitHub Pages
         id: deploy
+        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
         uses: actions/deploy-pages@v1
