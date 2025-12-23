@@ -1,4 +1,3 @@
-# Deploy site to GitHub Pages from branch: stage-1-frontend-and-api
 name: Pages Deploy
 
 on:
@@ -29,20 +28,13 @@ jobs:
         with:
           node-version: 18
 
-      - name: Debug info
-        run: |
-          echo "Ref: $GITHUB_REF"
-          echo "Repository: $GITHUB_REPOSITORY"
-          echo "Actor: $GITHUB_ACTOR"
-
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
+      - name: Build (gh-pages base)
         run: npm run build:ghpages
 
       - name: Upload Pages artifact
-        # USE v3 to avoid the deprecated actions/upload-artifact v3 error
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
@@ -51,7 +43,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     environment: github-pages
-    # Only deploy when this run is for the stage branch
     if: github.ref == 'refs/heads/stage-1-frontend-and-api'
     steps:
       - name: Deploy to GitHub Pages
