@@ -1,11 +1,10 @@
+# Deploy site to GitHub Pages from branch: stage-1-frontend-and-api
 name: Pages Deploy
 
-# Deploy site to GitHub Pages via GitHub Actions
 on:
   push:
-    branches: [main, master, stage-1-frontend-and-api]
-  pull_request:
-    branches: [main, master]
+    branches: [stage-1-frontend-and-api]
+  # Optional manual dispatch — it will still only deploy when the workflow ref is the stage branch
   workflow_dispatch:
 
 concurrency:
@@ -18,7 +17,7 @@ permissions:
   id-token: write
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     env:
       NPM_CONFIG_LEGACY_PEER_DEPS: "true"
@@ -43,11 +42,17 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Deploy to GitHub Pages (gh-pages branch)
-        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload artifact for GitHub Pages
+        # Make sure your production build outputs to `./dist`. Change `path:` if different.
+        uses: actions/upload-pages-artifact@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: ./dist
-          commit_message: "deploy: Pages via Actions (${ { github.sha } })"
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    # Enforce deploy only when the workflow run is for the stage branch
+    if: github.ref == 'refs/heads/stage-1-frontend-and-api'
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v1
