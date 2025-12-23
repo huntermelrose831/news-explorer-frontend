@@ -5,7 +5,7 @@ on:
   push:
     branches: [main, master, stage-1-frontend-and-api]
   pull_request:
-    branches: [main, master, stage-1-frontend-and-api]
+    branches: [main, master]
   workflow_dispatch:
 
 concurrency:
@@ -48,11 +48,11 @@ jobs:
 
       - name: Upload artifact
         if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v2
         with:
           path: ./dist
 
       - name: Deploy to GitHub Pages
         id: deploy
         if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v2
