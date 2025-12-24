@@ -4,6 +4,7 @@ import Header from "../Header/Header";
 import Preloader from "../Preloader/Preloader";
 import NewsCard from "../NewsCard/NewsCard";
 import About from "../About/About";
+import Footer from "../Footer/Footer";
 import "./Main.css";
 
 function Main() {
@@ -198,6 +199,7 @@ function Main() {
       )}
 
       <About />
+      <Footer />
     </main>
   );
 }
