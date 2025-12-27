@@ -1,7 +1,0 @@
-{
-  "github.copilot.chat.anthropic.tools.websearch.enabled": true,
-  "github.copilot.chat.azureModels": {},
-  "github.copilot.chat.customInstructionsInSystemMessage": true,
-  "github.copilot.chat.githubMcpServer.enabled": true,
-  "github.copilot.chat.tools.memory.enabled": true
-}
