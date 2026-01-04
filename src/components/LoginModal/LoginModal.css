@@ -158,3 +158,35 @@
 .modal__submit-button:disabled {
   cursor: not-allowed;
 }
+
+@media screen and (max-width: 480px) {
+  .modal__container {
+    width: calc(100% - 32px);
+    max-width: 430px;
+    padding: 24px 20px 0;
+    margin: 0 16px;
+  }
+
+  .modal__close-button {
+    top: -40px;
+    right: 0;
+  }
+
+  .modal__title {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .modal__label {
+    width: 100%;
+  }
+
+  .modal__submit-button {
+    width: 100%;
+  }
+
+  .modal__form {
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+}

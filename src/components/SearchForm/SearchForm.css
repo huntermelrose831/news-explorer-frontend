@@ -5,7 +5,6 @@
   justify-content: center;
   flex-grow: 1;
   padding: 0 104px 80px;
-  max-width: 1440px;
   margin: 0 auto;
   width: 100%;
   box-sizing: border-box;
@@ -48,11 +47,17 @@
   font-weight: 400;
   line-height: 22px;
   padding: 21px 24px;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 100px;
+  height: 64px;
   outline: none;
   background: white;
   color: #1a1b22;
+  transition: border-color 0.3s;
+}
+
+.search__form_input:focus {
+  border-color: #000000;
 }
 
 .search__form_input::placeholder {
@@ -95,9 +100,20 @@
   display: block;
 }
 
+@media screen and (max-width: 1024px) {
+  .search__form {
+    padding: 0 40px 60px;
+  }
+
+  .search__form_title {
+    font-size: 48px;
+    line-height: 56px;
+  }
+}
+
 @media screen and (max-width: 768px) {
   .search__form {
-    padding: 0 16px 32px;
+    padding: 0 40px 32px;
   }
 
   .search__form_title {
@@ -109,12 +125,39 @@
   .search__form_subtitle {
     font-size: 16px;
     line-height: 22px;
-    margin-bottom: 122px;
+    margin-bottom: 48px;
+  }
+
+  .search__form_input-container {
+    max-width: 442px;
+  }
+
+  .search__form_input {
+    height: 56px;
+    padding: 17px 24px;
+    padding-right: 140px;
+  }
+
+  .search__form_button {
+    width: 140px;
+    height: 56px;
+    font-size: 16px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .search__form {
+    padding: 0 16px 32px;
   }
 
   .search__form_input-container {
     flex-direction: column;
     gap: 16px;
+    max-width: 100%;
+  }
+
+  .search__form_input {
+    padding-right: 24px;
   }
 
   .search__form_button {

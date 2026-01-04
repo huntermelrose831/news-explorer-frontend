@@ -31,7 +31,7 @@ function ModalWithForm({
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = "";
     };
   }, [isOpen, onClose]);
 

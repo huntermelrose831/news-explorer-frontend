@@ -1,3 +1,4 @@
+/* Header block */
 .header {
   background-image: url("../../assets/backgroundphone.jpg");
   background-size: cover;
@@ -5,11 +6,12 @@
   background-repeat: no-repeat;
   height: 576px;
   display: flex;
-  width: 1440px;
+  width: 100%;
   flex-direction: column;
   position: relative;
   color: white;
 }
+
 .header::before {
   content: "";
   position: absolute;
@@ -27,19 +29,86 @@
 }
 
 /* Compact header variant used on pages like Saved News where we don't want the hero background */
-.header.header--compact {
+.header--compact {
   background-image: none;
   background-color: transparent; /* make nav readable */
   height: auto;
   padding: 20px 0;
 }
 
-.header.header--compact::before {
+.header--compact::before {
   display: none; /* hide the overlay */
 }
 
+/* Compact header variant styling for nested navigation */
+.header--compact .navigation {
+  border-bottom: 1px solid rgba(209, 210, 214, 1);
+}
+
+.header--compact .navigation__logo {
+  color: #000000;
+}
+
+.header--compact .navigation__link {
+  color: #000000;
+}
+
+.header--compact .navigation__link:hover {
+  border-bottom-color: #000000;
+}
+
+.header--compact .navigation__link_active {
+  border-bottom-color: #000000;
+}
+
+.header--compact .navigation__button {
+  color: #000000;
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.header--compact .navigation__button:hover {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.header--compact .navigation__hamburger-line {
+  background-color: #000000;
+}
+
+.header--compact .navigation__close-icon {
+  filter: none;
+}
+
+.header--compact .navigation__mobile-logo {
+  color: #000000;
+}
+
+.header--compact .navigation__icon-white {
+  display: none;
+}
+
+.header--compact .navigation__icon-black {
+  display: block;
+}
+
+.header--compact .navigation__button_logged-in:hover .navigation__icon-white {
+  display: block;
+}
+
+.header--compact .navigation__button_logged-in:hover .navigation__icon-black {
+  display: none;
+}
+
+/* Media queries for Header block */
 @media screen and (max-width: 768px) {
   .header {
     min-height: 496px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .header--compact .navigation__menu {
+    background: #ffffff;
   }
 }
