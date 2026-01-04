@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import "./NewsCard.css";
 
-import BookMark from "../../assets/bookmark.png";
-import BookMarkBlue from "../../assets/bookmarkblue.png";
-import Trash from "../../assets/trash.png";
+import BookMark from "../../assets/bookmark.svg";
+import BookMarkBlue from "../../assets/bookmarkblue.svg";
+import Trash from "../../assets/trash.svg";
 
 import { useAuth } from "../../contexts/AuthContext";
 import { saveArticle, deleteArticle } from "../../utils/api";

@@ -1,5 +1,5 @@
 import "./About.css";
-import Selfie from "../../assets/IMG_1385.jpg";
+import Selfie from "../../assets/selfie.jpg";
 function About() {
   return (
     <section className="about">
