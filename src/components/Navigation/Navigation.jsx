@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import LoginModal from "../LoginModal/LoginModal";
 import RegisterModal from "../RegisterModal/RegisterModal";
-import logoutwhite from "../../assets/Unionwhite.png";
+import logoutwhite from "../../assets/logout.svg";
 import logoutblack from "../../assets/Unionblack.svg";
 import closeIcon from "../../assets/close.svg";
 import { useAuth } from "../../contexts/AuthContext";
