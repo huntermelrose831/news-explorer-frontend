@@ -94,6 +94,12 @@
   background: none;
   color: rgba(0, 0, 0, 1);
   border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.modal__input:focus {
+  border-bottom-color: #2f71e5;
 }
 
 .modal__input::placeholder {
@@ -160,16 +166,32 @@
 }
 
 @media screen and (max-width: 480px) {
+  .modal {
+    align-items: flex-end;
+    z-index: 1100;
+  }
+
   .modal__container {
-    width: calc(100% - 32px);
-    max-width: 430px;
-    padding: 24px 20px 0;
-    margin: 0 16px;
+    width: 100%;
+    min-height: calc(100vh - 56px);
+    border-radius: 16px 16px 0 0;
+    padding: 16px 16px 0;
+    box-sizing: border-box;
   }
 
   .modal__close-button {
-    top: -40px;
-    right: 0;
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 1101;
+    width: 24px;
+    height: 24px;
+    pointer-events: auto;
+  }
+
+  .modal__close-icon {
+    width: 24px;
+    height: 24px;
   }
 
   .modal__title {

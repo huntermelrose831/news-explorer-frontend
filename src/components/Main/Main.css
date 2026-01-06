@@ -6,9 +6,8 @@
 
 .main__error,
 .main__nothing-found {
-  padding: 80px 104px;
   text-align: center;
-  margin: 0 auto;
+  margin: 80px auto;
 }
 
 .main__error-text {
@@ -50,8 +49,8 @@
 
 /* News-cards block */
 .news-cards {
-  padding: 80px 104px 60px;
-  margin: 0 auto;
+  max-width: 1232px;
+  margin: 80px auto 60px;
 }
 
 .news-cards__title {
@@ -95,14 +94,14 @@
 @media screen and (max-width: 1024px) {
   .main__error,
   .main__nothing-found {
-    padding: 60px 40px;
+    margin: 60px auto;
   }
 }
 
 @media screen and (max-width: 768px) {
   .main__error,
   .main__nothing-found {
-    padding: 40px 16px;
+    margin: 40px 16px;
   }
 
   .main__error-text {
@@ -114,24 +113,34 @@
 @media screen and (max-width: 480px) {
   .main__error,
   .main__nothing-found {
-    padding: 40px 16px;
+    margin: 40px 16px;
   }
 }
 
 /* Media queries for News-cards block */
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 1264px) {
   .news-cards {
-    padding: 60px 40px;
+    margin: 80px 16px 60px;
   }
 
   .news-cards__list {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .news-cards {
+    margin: 60px 40px;
+  }
+
+  .news-cards__list {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media screen and (max-width: 768px) {
   .news-cards {
-    padding: 40px 40px;
+    margin: 40px 16px;
   }
 
   .news-cards__title {
@@ -141,20 +150,29 @@
   }
 
   .news-cards__list {
-    grid-template-columns: repeat(3, 224px);
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
     margin-bottom: 32px;
     justify-content: center;
   }
 }
 
+@media screen and (max-width: 736px) {
+  .news-cards__list {
+    grid-template-columns: 288px;
+    gap: 16px;
+    justify-content: center;
+  }
+}
+
 @media screen and (max-width: 480px) {
   .news-cards {
-    padding: 40px 16px;
+    margin: 40px 16px;
   }
 
   .news-cards__list {
-    grid-template-columns: 1fr;
+    grid-template-columns: 288px;
     gap: 16px;
+    justify-content: center;
   }
 }

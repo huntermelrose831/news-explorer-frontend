@@ -72,12 +72,12 @@
   border-color: rgba(0, 0, 0, 0.06);
 }
 
-.header--compact .navigation__hamburger-line {
-  background-color: #000000;
+.header--compact .navigation__hamburger-icon {
+  filter: brightness(0);
 }
 
 .header--compact .navigation__close-icon {
-  filter: none;
+  filter: brightness(0);
 }
 
 .header--compact .navigation__mobile-logo {
@@ -98,13 +98,6 @@
 
 .header--compact .navigation__button_logged-in:hover .navigation__icon-black {
   display: none;
-}
-
-/* Media queries for Header block */
-@media screen and (max-width: 768px) {
-  .header {
-    min-height: 496px;
-  }
 }
 
 @media screen and (max-width: 480px) {

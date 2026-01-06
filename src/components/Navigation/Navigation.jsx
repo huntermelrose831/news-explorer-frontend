@@ -5,6 +5,7 @@ import RegisterModal from "../RegisterModal/RegisterModal";
 import logoutwhite from "../../assets/logout.svg";
 import logoutblack from "../../assets/Unionblack.svg";
 import closeIcon from "../../assets/close.svg";
+import menuIcon from "../../assets/menu.svg";
 import { useAuth } from "../../contexts/AuthContext";
 import "./Navigation.css";
 
@@ -74,13 +75,20 @@ function Navigation() {
         <button
           className={`navigation__hamburger ${
             isMobileMenuOpen ? "navigation__hamburger_active" : ""
+          } ${
+            isLoginModalOpen || isRegisterModalOpen
+              ? "navigation__hamburger_hidden"
+              : ""
           }`}
           onClick={toggleMobileMenu}
           type="button"
           aria-label="Toggle menu"
         >
-          <span className="navigation__hamburger-line"></span>
-          <span className="navigation__hamburger-line"></span>
+          <img
+            src={menuIcon}
+            alt="Menu"
+            className="navigation__hamburger-icon"
+          />
         </button>
 
         <ul
