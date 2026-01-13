@@ -1,0 +1,62 @@
+/* Import the base modal styles */
+@import "../LoginModal/LoginModal.css";
+
+.modal__container_register {
+  min-height: 457px;
+}
+
+/* When registration success is displayed, make modal compact */
+.modal__container_register.modal__container_success {
+  min-height: 182px;
+  max-width: 520px;
+}
+
+.register-success {
+  text-align: left;
+}
+
+.register-success__title {
+  font-family: "Roboto Slab", serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #1a1b22;
+  max-width: 315px;
+  margin: 0 0 12px;
+}
+
+.register-success__link {
+  background: none;
+  border: none;
+  color: #2f71e5;
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.register-success {
+  padding: 24px 24px;
+  max-height: 182px;
+}
+
+.register-success__title {
+  font-family: "Roboto Slab", serif;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #1a1b22;
+  margin: 0 0 20px;
+}
+
+.register-success__link {
+  background: none;
+  border: none;
+  color: #2f71e5;
+  text-decoration: none;
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+}

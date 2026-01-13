@@ -1,0 +1,107 @@
+/* Header block */
+.header {
+  background-image: url("../../assets/backgroundphone.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 576px;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  position: relative;
+  color: white;
+}
+
+.header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 0;
+}
+
+.header > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Compact header variant used on pages like Saved News where we don't want the hero background */
+.header--compact {
+  background-image: none;
+  background-color: transparent; /* make nav readable */
+  height: auto;
+  padding: 20px 0;
+}
+
+.header--compact::before {
+  display: none; /* hide the overlay */
+}
+
+/* Compact header variant styling for nested navigation */
+.header--compact .navigation {
+  border-bottom: 1px solid rgba(209, 210, 214, 1);
+}
+
+.header--compact .navigation__logo {
+  color: #000000;
+}
+
+.header--compact .navigation__link {
+  color: #000000;
+}
+
+.header--compact .navigation__link:hover {
+  border-bottom-color: #000000;
+}
+
+.header--compact .navigation__link_active {
+  border-bottom-color: #000000;
+}
+
+.header--compact .navigation__button {
+  color: #000000;
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.header--compact .navigation__button:hover {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.header--compact .navigation__hamburger-icon {
+  filter: brightness(0);
+}
+
+.header--compact .navigation__close-icon {
+  filter: brightness(0);
+}
+
+.header--compact .navigation__mobile-logo {
+  color: #000000;
+}
+
+.header--compact .navigation__icon-white {
+  display: none;
+}
+
+.header--compact .navigation__icon-black {
+  display: block;
+}
+
+.header--compact .navigation__button_logged-in:hover .navigation__icon-white {
+  display: block;
+}
+
+.header--compact .navigation__button_logged-in:hover .navigation__icon-black {
+  display: none;
+}
+
+@media screen and (max-width: 480px) {
+  .header--compact .navigation__menu {
+    background: #ffffff;
+  }
+}

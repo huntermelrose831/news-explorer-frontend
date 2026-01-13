@@ -1,0 +1,126 @@
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 30px;
+  color: #000000;
+  font-size: 14px;
+  background: #ffffff;
+}
+
+.footer__copyright {
+  margin: 0;
+  opacity: 0.9;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 22px;
+  letter-spacing: 0px;
+  color: rgba(182, 188, 191, 1);
+}
+
+.footer__links {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+.footer__nav-row {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+.footer__social-row {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.footer__link {
+  color: inherit;
+  text-decoration: none;
+
+  font-family: Roboto;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: 0px;
+  text-align: center;
+}
+
+.footer__link:hover {
+  text-decoration: underline;
+  color: #333;
+}
+
+.footer__social {
+  display: inline-flex;
+  align-items: center;
+
+  border-radius: 4px;
+  transition: transform 120ms ease, filter 120ms ease;
+}
+
+.footer__icon {
+  width: 24px;
+  height: 24px;
+  object-fit: cover;
+  display: block;
+}
+
+.footer__social:hover .footer__icon,
+.footer__social:focus-visible .footer__icon {
+  transform: translateY(-2px);
+  filter: brightness(0.9);
+  outline: none;
+}
+
+@media screen and (max-width: 768px) {
+  .footer {
+    padding: 18px 40px;
+  }
+
+  .footer__links {
+    gap: 24px;
+  }
+
+  .footer__nav-row {
+    gap: 24px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .footer {
+    flex-direction: column-reverse;
+    gap: 38px;
+    text-align: left;
+    padding: 20px 16px;
+  }
+
+  .footer__links {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    gap: 16px;
+  }
+
+  .footer__nav-row {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    align-items: flex-start;
+  }
+
+  .footer__social-row {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .footer__link {
+    font-size: 16px;
+    line-height: 22px;
+  }
+}
